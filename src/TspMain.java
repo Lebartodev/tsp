@@ -43,10 +43,12 @@ public class TspMain {
 
         });
         SS ss = new SS(Rn,rk);
+
         ss.calcSS0();
         ss.calcSS1();
         ss.calcSS2();
         ss.calcSS3();
+        ARSS arss = new ARSS(Rn);
     }
 
     public void calcEps2(){
