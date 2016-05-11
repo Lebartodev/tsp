@@ -47,6 +47,14 @@ public class ARSS {
         System.out.println("alpha1=" + alp32[1]);
         System.out.println("alpha2=" + alp32[2]);
 
+        double rcsi[] = M3N2M2();
+        System.out.println("M3N2 meth 2");
+        for(int i = 0;i<10;i++){
+            System.out.println(rcsi[i]);
+        }
+
+
+
 
     }
 
@@ -58,15 +66,10 @@ public class ARSS {
         while (i < 1000) {
             alpha[1] = (R[1] - b1 * R[0]) / alpha[0];
             double tmp = R[0] - b1 * R[1] - Math.pow(alpha[1], 2) - alpha[0] * (alpha[1]) * b1;
-            if (tmp < 0) return new double[]{0};
+            if (tmp < 0) return new double[2];
             else alpha[0] = Math.sqrt(tmp);
             i++;
         }
-        /*System.out.println("beta1=" +b1);
-        System.out.println("R0="+(b1*R[1]+Math.pow(alpha[0],2)+Math.pow(alpha[1],2)+alpha[0]*(alpha[1])*b1));
-        System.out.println("R0(sci)="+(b1*R[1]+Math.pow(3.2593,2)+3.2593*(-5.6501)*b1+Math.pow(-5.6501,2)));
-        System.out.println("R1="+(R[0]*b1+alpha[0]*alpha[1]));
-        System.out.println("R1(sci)="+(R[0]*b1+(3.2593 )*(-5.6501)));*/
 
         return alpha;
     }
@@ -83,7 +86,7 @@ public class ARSS {
                     - alpha[3] * (b1 * (b1 * alpha[0] + alpha[1]) + alpha[2])) / alpha[0];
             double tmp = R[0] - b1 * R[1] - alpha[1] * (b1 * alpha[0] + alpha[1]) - alpha[2] * (b1 * (b1 * alpha[0] + alpha[1]) + alpha[2])
                     - alpha[3] * (b1 * (b1 * (b1 * alpha[0] + alpha[1]) + alpha[2]) + alpha[3]);
-            if (tmp < 0) return new double[]{0};
+            if (tmp < 0) return new double[4];
             else alpha[0] = Math.sqrt(tmp);
             i++;
         }
@@ -157,7 +160,7 @@ public class ARSS {
             alpha[1] = (R[1] - b1 * R[0] - b2 * R[1] - alpha[2] * b1 * alpha[0]) / ((alpha[0] + alpha[2]));
             double tmp = R[0] - b1 * R[1] - b2 * R[2] - alpha[1] * (b1 * alpha[0] + alpha[1]) - alpha[2]
                     * (b1 * (b1 * alpha[0] + alpha[1]) + b2 * alpha[0] + alpha[2]);
-            if (tmp < 0) return new double[]{0};
+            if (tmp < 0) return new double[3];
             else alpha[0] = Math.sqrt(tmp);
             i++;
         }
@@ -243,6 +246,52 @@ public class ARSS {
         return alpha;
 
     }
+    public double[] M3N2M2(){
+        double[][] a = new double[][]{
+                {R[2], R[1], R[0], R[3]},
+                {R[3], R[2], R[1], R[4]},
+                {R[4], R[3], R[2], R[5]}
+        };
+        double[] x = solveSystem(a);
+        int i = 0;
 
+        double alpha1 = 0;
+        double alpha2 = 0;
+        double alpha3 = 0;
+
+        double eps = 0.0001;
+        double b1 = x[0];
+        double b2 = x[1];
+        double b3 = x[2];
+        double [] res=new double[10];
+        for(int m = 0;m<10;m++){
+            res[m]=R[m]-b1*R[Math.abs(m-1)]-b2*R[Math.abs(m-2)]-b3*R[Math.abs(m-3)];
+            System.out.println("R["+m+"]="+R[m]+"-"+b1+" "+ R[Math.abs(m-1)]+"-"+b2+" "+R[Math.abs(m-2)]+"-"+b3+" "+R[Math.abs(m-3)]);
+        }
+        double alpha0 = Math.sqrt(res[0]);
+        while (Math.abs(Math.pow(alpha0, 2) + Math.pow(alpha1, 2) + Math.pow(alpha2, 2) + Math.pow(alpha3, 2) - res[0]) > eps ||
+                Math.abs(alpha0*alpha1+alpha1*alpha2+alpha2*alpha3-res[1]) > eps ||
+                Math.abs(alpha0*alpha2+alpha1*alpha3-res[2]) > eps ||
+                Math.abs(alpha0*alpha3-res[3]) > eps) {
+            alpha3 = res[3]/alpha0;
+            alpha2 = (res[2]-alpha1*alpha3)/alpha0;
+            alpha1 = (res[1]-alpha1*alpha2-alpha2*alpha3)/alpha0;
+            if(res[0] < Math.pow(alpha1, 2)+Math.pow(alpha2, 2)+Math.pow(alpha3, 2)) {
+                return new double[4];
+            } else {
+                alpha0 = Math.sqrt(res[0]-Math.pow(alpha1, 2)-Math.pow(alpha2, 2)-Math.pow(alpha3, 2));
+            }
+        }
+        System.out.println("a0="+alpha0);
+        System.out.println("a1="+alpha1);
+        System.out.println("a2="+alpha2);
+        System.out.println("a3="+alpha3);
+
+
+
+
+
+        return res;
+    }
 
 }

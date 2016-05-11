@@ -15,9 +15,9 @@ public class TspMain {
     private List<Double> data = new ArrayList<>();
     public TspMain(){
         fillList();
-        //System.out.println("Mx = "+Mx(COUNT_N));
-       // System.out.println("S^2="+S2(COUNT_N,Mx(COUNT_N)));
-       // System.out.println("S^2 fix="+S2fix(COUNT_N,Mx(COUNT_N)));
+        System.out.println("Mx = "+Mx(COUNT_N));
+        System.out.println("S^2="+S2(COUNT_N,Mx(COUNT_N)));
+        System.out.println("S^2 fix="+S2fix(COUNT_N,Mx(COUNT_N)));
         for(int i = 0;i<11;i++){
         Rn[i]=Rk(COUNT_N,i,Mx(COUNT_N));
         rk[i] = rk(COUNT_N,i,Mx(COUNT_N));
